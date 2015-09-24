@@ -1,5 +1,5 @@
 #### [Mislan et  al. (in press) Figure1](https://doi.org/10.1111/oik.02650)
-====================  
+--- 
 This repository hosts an interactive graph for Figure 1 in a paper published in [Oikos](http://www.oikosjournal.org/):
 
 **Reference:**  
