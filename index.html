@@ -1,1 +1,283 @@
-Hello World!
+<!DOCTYPE HTML>
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Allison Smith</title>
+
+    <link rel="stylesheet" href="css/reset.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+  </head>
+  <body>
+    <div class="boxgraph">
+    	<div class =  "nav">
+    	  <dir1>Select Legend</dir1>
+    		<div  class = "buttonex1">
+    		  <button class="habitat" >Habitat Type</button><br>
+    			<button class="protein">Protein Type</button><br>
+    			<button class="group">Group</button><br>
+    			<button class="none">None</button><br>
+    		 </div>
+    		 <div class="ins1">Place cursor on points to see the species name, common name, and reference.</div>
+    		</div>
+      </div>
+
+    		<script>
+    			var margin = {top: 10, right: 20, bottom: 70, left: 100},
+    				width = 500 - margin.left - margin.right,
+    				height = 450 - margin.top - margin.bottom;
+
+          var x = d3.scale.linear()
+    				.range([0, width]);
+
+    			var y = d3.scale.linear()
+    				.range([height, 0]);
+
+    			var color = d3.scale.ordinal()
+    				.range(["#e41a1c"," #377eb8","#4daf4a", "#ffff33", "#984ea3", "#ff7f00"]);
+
+    			var shapes = {
+    				"benthic":    "square",
+    				"hemoglobin": "square",
+    				"vertebrate": "square"
+    				};
+
+    			function shape(d) {
+    				return shapes[d] || "circle";
+    				}
+
+    			var legendsymbols = d3.svg.symbol().type(shape);
+
+    			var xAxis = d3.svg.axis()
+    				.scale(x)
+    				.tickPadding(7)
+    				.orient("bottom");
+
+    			var yAxis = d3.svg.axis()
+    				.scale(y)
+    				.tickPadding(7)
+    				.orient("left");
+
+          var tooltip = d3.select(".boxgraph").append("div")
+                 .attr("class", "tooltip")
+                 .style("opacity", 0);
+
+    			var svg = d3.select(".boxgraph").append("svg")
+    				.attr("width", width + margin.left + margin.right)
+    				.attr("height", height + margin.top + margin.bottom)
+    				.append("g")
+    				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+    			d3.tsv("graphdata/p50_deltaH_data4.tsv", function(error, data) {
+    				data.forEach(function(d) {
+    					d.p50 = +d.p50;
+    					d.deltaH = +d.deltaH;
+    					});
+
+    			 	x.domain(d3.extent(data, function(d) { return d.p50; })).nice();
+    				y.domain(d3.extent(data, function(d) { return d.deltaH; })).nice();
+
+    				svg.append("g")
+    					.attr("class", "x axis")
+    				  .attr("transform", "translate(0," + height + ")")
+    				  .call(xAxis)
+    				  .append("text")
+    				  .attr("class", "label")
+    				  .attr("x", (width- margin.left - margin.right)/2+100)
+    				  .attr("y", 60)
+    				  .style("text-anchor", "end")
+    				  .text("P\u2085\u2080 (kPa)");
+
+    				svg.append("g")
+    				  .attr("class", "y axis")
+    				  .call(yAxis)
+    				  .append("text")
+    				  .attr("transform", "rotate(-90)")
+    				  .attr("y", -70)
+    				  .attr("dy", ".71em")
+    				  .attr("x", (-height + margin.top + margin.bottom)/2)
+    				  .style("text-anchor", "end")
+    				  .text("\u0394H (kJ mol\u207B\u00B9)");
+
+    				/*svg.append("text")
+    					.attr("transform", function(d) {return "translate(" + x(2) + "," + y(-40-4) + ")"; })
+    					.text("A")
+    					.attr("font-family", "sans-serif")
+    					.attr("font-size", "24px")
+    					.attr("fill", "green");
+
+    				svg.append("text")
+    					.attr("transform", function(d) {return "translate(" + x(2) + "," + y(20-4) + ")"; })
+    					.text("B")
+    					.attr("font-family", "sans-serif")
+    					.attr("font-size", "24px")
+    					.attr("fill", "blue");
+
+    				svg.append("text")
+    					.attr("transform", function(d) {return "translate(" + x(8) + "," + y(-40-4) + ")"; })
+    					.text("C")
+    					.attr("font-family", "sans-serif")
+    					.attr("font-size", "24px")
+    					.attr("fill", "red");*/
+
+    				svg.selectAll(".dot")
+    				  .data(data)
+    				 .enter().append("path")
+    				  .attr("class", "dot")
+    				  .attr("transform", function(d) {return "translate(" + x(d.p50) + "," + y(d.deltaH) + ")"; })
+    				  .attr("d", d3.svg.symbol().type("circle"))
+    				  .attr("cx", function(d) { return x(d.p50); })
+    				  .attr("cy", function(d) { return y(d.deltaH); })
+    				  .style("fill", "black")
+    					  .on("mouseover", function(d) {
+                  var xPosition = parseFloat(d3.select(this).attr("cx"))+150;
+      						var yPosition = parseFloat(d3.select(this).attr("cy"));
+              	  tooltip.transition()
+                    .duration(200)
+                    .style("opacity", 1);
+                  tooltip.html("Species: " + "<i>" + d.Species + "</i>" + "<br/>" + "Common Name: " + d.CommonName + "<br/>" + "Reference: " + d.Reference)
+                    .style("left", xPosition + "px")
+                    .style("top", yPosition + "px");})
+                .on("mouseout", function(d) {
+                  tooltip.transition()
+                    .style("opacity", 0);});
+    						});
+
+    		</script>
+
+    		<script>
+
+    			d3.select(".habitat").on("click", function(d) {
+    				svg.selectAll(".dot")
+    					.attr("d",  function(d) { return legendsymbols(d.Habitat);})
+    					.style("fill", function(d) {return color(d.Habitat); });
+
+    				d3.selectAll("#proteinrect").style("opacity", 0);
+    				d3.selectAll("#proteintext").style("opacity", 0);
+    				d3.selectAll("#grouprect").style("opacity", 0);
+    				d3.selectAll("#grouptext").style("opacity", 0);
+
+    				var legend = svg.selectAll(".legend")
+    					.data(color.domain())
+    				 .enter().append("g")
+    					.attr("class", "legend")
+    					.attr("transform", function (d, i){if (d=="benthic"){return "translate(0,0)";}else{return "translate(0,20)";}});
+
+    				legend.append("path")
+    					.attr("transform", function() { return "translate("+(width-14)+",10)"; })
+    					.attr("d", legendsymbols)
+    					.style("fill", color)
+    					.style("opacity", 1)
+    					.style("stroke", "#000")
+    					.attr("id", "habitatrect");
+
+    				legend.append("text")
+    					.attr("x", width - 24)
+    					.attr("y", 9)
+    					.attr("dy", ".35em")
+    					.style("text-anchor", "end")
+    					.text(function(d) { return d; })
+    					.attr("id", "habitattext")
+    					.style("opacity", 1);
+
+    				d3.selectAll("#habitatrect").style("opacity", 1);
+    				d3.selectAll("#habitattext").style("opacity", 1);
+            });
+
+    			d3.select(".protein").on("click", function(d) {
+    				svg.selectAll(".dot")
+    					.attr("d",  function(d) {return legendsymbols(d.Protein);})
+    					.style("fill", function(d) {return color(d.Protein); });
+
+    				d3.selectAll("#habitatrect").style("opacity", 0);
+    				d3.selectAll("#habitattext").style("opacity", 0);
+    				d3.selectAll("#grouprect").style("opacity", 0);
+    				d3.selectAll("#grouptext").style("opacity", 0);
+
+    				var legend = svg.selectAll(".legend")
+    					.data(color.domain())
+    				.enter().append("g")
+    					.attr("class", "legend")
+    					.attr("transform", function (d, i){if (d=="hemoglobin"){return "translate(0,0)";}else{return "translate(0,20)";}});
+
+    				legend.append("path")
+    					.attr("transform", function() { return "translate("+(width-14)+",10)"; })
+    					.attr("d", legendsymbols)
+    					.style("fill", color)
+    					.style("opacity", 1)
+    					.style("stroke", "#000")
+    					.attr("id", "proteinrect");
+
+    				legend.append("text")
+    					.attr("x", width - 24)
+    					.attr("y", 9)
+    					.attr("dy", ".35em")
+    					.style("text-anchor", "end")
+    					.text(function(d) { return d; })
+    					.attr("id", "proteintext");
+
+    				d3.selectAll("#proteinrect").style("opacity", 1);
+    				d3.selectAll("#proteintext").style("opacity", 1);
+    				});
+
+    			d3.select(".group").on("click", function(d) {
+    				svg.selectAll(".dot")
+    					.attr("d",  function(d) {return legendsymbols(d.Group);})
+    					.style("fill", function(d) { return color(d.Group); });
+
+    				d3.selectAll("#habitatrect").style("opacity", 0);
+    				d3.selectAll("#habitattext").style("opacity", 0);
+    				d3.selectAll("#proteinrect").style("opacity", 0);
+    				d3.selectAll("#proteintext").style("opacity", 0);
+
+    				var legend = svg.selectAll(".legend")
+    					.data(color.domain())
+    				.enter().append("g")
+    					.attr("class", "legend")
+    					.attr("transform", function (d, i){if (d=="vertebrate"){return "translate(0,0)";}else{return "translate(0,20)";}});
+
+    				legend.append("path")
+    					.attr("transform", function() { return "translate("+(width-14)+",10)"; })
+    					.attr("d", legendsymbols)
+    					.style("fill", color)
+    					.style("opacity", 1)
+    					.style("stroke", "#000")
+    					.attr("id", "grouprect");
+
+    				legend.append("text")
+    					.attr("x", width - 24)
+    					.attr("y", 9)
+    					.attr("dy", ".35em")
+    					.style("text-anchor", "end")
+    					.text(function(d) { return d; })
+    					.attr("id", "grouptext");
+
+    				d3.selectAll("#grouprect").style("opacity", 1);
+    				d3.selectAll("#grouptext").style("opacity", 1);
+    				});
+
+    			d3.select(".none").on("click", function(d) {
+    				svg.selectAll(".dot")
+    					.attr("d", d3.svg.symbol().type("circle"))
+    					.style("fill", function(d) { return "black"; });
+
+    				d3.selectAll("#habitatrect").style("opacity", 0);
+    				d3.selectAll("#habitattext").style("opacity", 0);
+    				d3.selectAll("#proteinrect").style("opacity", 0);
+    				d3.selectAll("#proteintext").style("opacity", 0);
+    				d3.selectAll("#grouprect").style("opacity", 0);
+    				d3.selectAll("#grouptext").style("opacity", 0);
+    				});
+
+    		</script>
+        <div class="textresearch">
+          <p>Figure 1:  This is my first interactive graph.  I made it for a study I was doing on blood-oxygen binding at the gills of different animals that live in the ocean.  There is more information about the study on my <a href="research.html">research page</a>.  Each point on the plot represents a different species.  The x-axis shows the oxygen affinity (P<sub>50</sub>) of blood pigments and the y-axis shows the heat of oxygenation (&Delta;H) for the reversible reaction between oxygen and blood pigments. Oxygen affinity is one of the traits determining hypoxia tolerance.  The story that this graph reveals to me is that: 1) There is a lot of variation in blood-oxygen traits among marine species.  2) The range in heat of oxygenation from negative to positive means that temperatures in the environment both increase and decrease oxygen affinity depending on species. 3) There are no species with blood-oxygen binding traits that correspond with a positive &Delta;H and a high P<sub>50</sub>.  4) There does not appear to be any overall pattern related to habitat type, protein type, status as an invertebrate/vertebrate, or vertical migrator.  However, clicking on habitat type for the legend and moving the cursor over some of the outlier points reveals that outliers are pelagic species of krill and squid.  These blood-oxygen binding traits could have important implications for the hypoxia tolerance of these species and their ability to live in ocean habitats. </p>
+        </div>
+    </div>
+  </body>
+</html>
