@@ -13,6 +13,10 @@
 
   </head>
   <body>
+    <div class="boxreference">
+      <h1>Reference:</h1>
+      <p>Mislan, K. A. S., Dunne, J. P., and Sarmiento, J. L. (in press). The fundamental niche of blood-oxygen binding in the pelagic ocean. Oikos.<a href=" https://doi.org/10.1111/oik.02650">  https://doi.org/10.1111/oik.02650</a></p>
+    </div>
     <div class="boxgraph">
     	<div class =  "nav">
     	  <dir1>Select Legend</dir1>
@@ -104,26 +108,7 @@
     				  .style("text-anchor", "end")
     				  .text("\u0394H (kJ mol\u207B\u00B9)");
 
-    				/*svg.append("text")
-    					.attr("transform", function(d) {return "translate(" + x(2) + "," + y(-40-4) + ")"; })
-    					.text("A")
-    					.attr("font-family", "sans-serif")
-    					.attr("font-size", "24px")
-    					.attr("fill", "green");
 
-    				svg.append("text")
-    					.attr("transform", function(d) {return "translate(" + x(2) + "," + y(20-4) + ")"; })
-    					.text("B")
-    					.attr("font-family", "sans-serif")
-    					.attr("font-size", "24px")
-    					.attr("fill", "blue");
-
-    				svg.append("text")
-    					.attr("transform", function(d) {return "translate(" + x(8) + "," + y(-40-4) + ")"; })
-    					.text("C")
-    					.attr("font-family", "sans-serif")
-    					.attr("font-size", "24px")
-    					.attr("fill", "red");*/
 
     				svg.selectAll(".dot")
     				  .data(data)
@@ -146,7 +131,28 @@
                 .on("mouseout", function(d) {
                   tooltip.transition()
                     .style("opacity", 0);});
-    						});
+
+            svg.append("text")
+              .attr("transform", function(d) {return "translate(" + x(2) + "," + y(-40-4) + ")"; })
+            	.text("A")
+            	.attr("font-family", "sans-serif")
+            	.attr("font-size", "24px")
+            	.attr("fill", "green");
+
+            svg.append("text")
+            	.attr("transform", function(d) {return "translate(" + x(2) + "," + y(20-4) + ")"; })
+            	.text("B")
+            	.attr("font-family", "sans-serif")
+            	.attr("font-size", "24px")
+            	.attr("fill", "blue");
+
+            svg.append("text")
+            	.attr("transform", function(d) {return "translate(" + x(8) + "," + y(-40-4) + ")"; })
+            	.text("C")
+            	.attr("font-family", "sans-serif")
+            	.attr("font-size", "24px")
+            	.attr("fill", "red");
+    			  });
 
     		</script>
 
@@ -275,9 +281,10 @@
     				});
 
     		</script>
-        <div class="textresearch">
-          <p>Figure 1:  This is my first interactive graph.  I made it for a study I was doing on blood-oxygen binding at the gills of different animals that live in the ocean.  There is more information about the study on my <a href="research.html">research page</a>.  Each point on the plot represents a different species.  The x-axis shows the oxygen affinity (P<sub>50</sub>) of blood pigments and the y-axis shows the heat of oxygenation (&Delta;H) for the reversible reaction between oxygen and blood pigments. Oxygen affinity is one of the traits determining hypoxia tolerance.  The story that this graph reveals to me is that: 1) There is a lot of variation in blood-oxygen traits among marine species.  2) The range in heat of oxygenation from negative to positive means that temperatures in the environment both increase and decrease oxygen affinity depending on species. 3) There are no species with blood-oxygen binding traits that correspond with a positive &Delta;H and a high P<sub>50</sub>.  4) There does not appear to be any overall pattern related to habitat type, protein type, status as an invertebrate/vertebrate, or vertical migrator.  However, clicking on habitat type for the legend and moving the cursor over some of the outlier points reveals that outliers are pelagic species of krill and squid.  These blood-oxygen binding traits could have important implications for the hypoxia tolerance of these species and their ability to live in ocean habitats. </p>
+        <div class="figurelegend">
+          <p>Figure 1:  There is a range in oxygen affinity (P<sub>50</sub>) and heat of oxygenation (&Delta;H) traits among marine species. Each point on the plot represents a different species. Place the cursor on a point to see the species name, common name, and reference.  Click on the buttons in the top right corner to select the legend.  A, B, and C represent physiological types that will be explored in more detail and correspond to the following characteristics, A = low P<sub>50</sub> with negative &Delta;H, B = low P<sub>50</sub> with positive &Delta;H, and C = high P<sub>50</sub> with negative &Delta;H. Low P<sub>50</sub> means high oxygen affinity and more hypoxia tolerant. Blood-oxygen binding of species with &Delta;H=0 is independent of temperature. There are no species with traits that correspond with a positive &Delta;H and a high P<sub>50</sub>. This interactive graph consolidates information from Figure 1, and Tables 1, 2, and 3 in the print version of the paper.
+          </p>
         </div>
-    </div>
+
   </body>
 </html>
