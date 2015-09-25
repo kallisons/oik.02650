@@ -51,7 +51,7 @@ sub {
 .boxreference{
   max-width: 600px;
   display: block;
-  margin-top: 15px;
+  margin-top: 10px;
   margin-left:auto;
   margin-right:auto;
   padding-left: 7px;
@@ -60,28 +60,22 @@ sub {
 }
 
 .boxreference h1 {
-    font-size:14px;
+    font-size:12px;
     font-family: 'Open Sans Bold 700', sans-serif;
     font-weight: bold;
     color: #000000;
   }
 
 .boxreference p {
-    font-size:14px;
+    font-size:12px;
     font-family: 'Open Sans', sans-serif;
     color: #000000;
   }
 
 .boxreference a {
-    font-size:14px;
+    font-size:12px;
     font-family: 'Open Sans', sans-serif;
-    color: #000080;
   }
-
-.boxreference a:hover {
-    color: #ff0000;
-  }
-
 
 
 /*
@@ -92,7 +86,7 @@ sub {
 .boxgraph{
   max-width: 600px;
   display: block;
-  margin-top: 30px;
+  margin-top: 0px;
   margin-left:auto;
   margin-right:auto;
 }
@@ -189,13 +183,20 @@ sub {
   }
 
 .figurelegend p {
-    font-size:14px;
+    font-size:12px;
     font-family: 'Open Sans', sans-serif;
     color: #000000;
   }
 
+.figurelegend b {
+      font-size:12px;
+      font-family: 'Open Sans Bold 700', sans-serif;
+      font-weight: bold;
+      color: #000000;
+  }
+
 .figurelegend a {
-    font-size:14px;
+    font-size:12px;
     font-family: 'Open Sans', sans-serif;
     color: #000080;
   }
