@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="css/reset.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
-    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="d3/d3.min.js" charset="utf-8"></script>
 
   </head>
   <body>
@@ -21,9 +21,10 @@
     	<div class =  "nav">
     	  <dir1>Select Legend</dir1>
     		<div  class = "buttonex1">
-    		  <button class="habitat" >Habitat Type</button><br>
-    			<button class="protein">Protein Type</button><br>
-    			<button class="group">Group</button><br>
+    		  <button class="habitat" >Habitat</button><br>
+    			<button class="pigment">Pigment</button><br>
+    			<button class="vertebrate">Vertebrate</button><br>
+          <button class="migrator">Vertical Migration</button><br>
     			<button class="none">None</button><br>
     		 </div>
     		 <div class="ins1">Place cursor on points to see the species name, common name, and reference.</div>
@@ -42,12 +43,13 @@
     				.range([height, 0]);
 
     			var color = d3.scale.ordinal()
-    				.range(["#e41a1c"," #377eb8","#4daf4a", "#ffff33", "#984ea3", "#ff7f00"]);
+    				.range(["#e41a1c"," #377eb8","#4daf4a", "#ffff33", "#984ea3", "#ff7f00", "#a6cee3", "#b15928"]);
 
     			var shapes = {
     				"benthic":    "square",
     				"hemoglobin": "square",
-    				"vertebrate": "square"
+    				"vertebrate": "square",
+            "migrator": "square"
     				};
 
     			function shape(d) {
@@ -66,6 +68,8 @@
     				.tickPadding(7)
     				.orient("left");
 
+
+
           var tooltip = d3.select(".boxgraph").append("div")
                  .attr("class", "tooltip")
                  .style("opacity", 0);
@@ -77,7 +81,7 @@
     				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
-    			d3.tsv("graphdata/p50_deltaH_data4.tsv", function(error, data) {
+    			d3.tsv("graphdata/oik.02650_data.tsv", function(error, data) {
     				data.forEach(function(d) {
     					d.p50 = +d.p50;
     					d.deltaH = +d.deltaH;
@@ -108,7 +112,35 @@
     				  .style("text-anchor", "end")
     				  .text("\u0394H (kJ mol\u207B\u00B9)");
 
+            svg.append("line")
+              .attr("x1", 0)
+              .attr("y1", y(0))
+              .attr("x2", width)
+              .attr("y2", y(0))
+              .attr("stroke-width", 1)
+              .attr("stroke", "black");
 
+
+            svg.append("text")
+              .attr("transform", function(d) {return "translate(" + x(2) + "," + y(-40-4) + ")"; })
+              .text("A")
+              .attr("font-family", "sans-serif")
+              .attr("font-size", "24px")
+              .attr("fill", "green");
+
+            svg.append("text")
+              .attr("transform", function(d) {return "translate(" + x(2) + "," + y(20-4) + ")"; })
+              .text("B")
+              .attr("font-family", "sans-serif")
+              .attr("font-size", "24px")
+              .attr("fill", "blue");
+
+            svg.append("text")
+              .attr("transform", function(d) {return "translate(" + x(8) + "," + y(-40-4) + ")"; })
+              .text("C")
+              .attr("font-family", "sans-serif")
+              .attr("font-size", "24px")
+              .attr("fill", "red");
 
     				svg.selectAll(".dot")
     				  .data(data)
@@ -132,26 +164,7 @@
                   tooltip.transition()
                     .style("opacity", 0);});
 
-            svg.append("text")
-              .attr("transform", function(d) {return "translate(" + x(2) + "," + y(-40-4) + ")"; })
-            	.text("A")
-            	.attr("font-family", "sans-serif")
-            	.attr("font-size", "24px")
-            	.attr("fill", "green");
 
-            svg.append("text")
-            	.attr("transform", function(d) {return "translate(" + x(2) + "," + y(20-4) + ")"; })
-            	.text("B")
-            	.attr("font-family", "sans-serif")
-            	.attr("font-size", "24px")
-            	.attr("fill", "blue");
-
-            svg.append("text")
-            	.attr("transform", function(d) {return "translate(" + x(8) + "," + y(-40-4) + ")"; })
-            	.text("C")
-            	.attr("font-family", "sans-serif")
-            	.attr("font-size", "24px")
-            	.attr("fill", "red");
     			  });
 
     		</script>
@@ -163,10 +176,12 @@
     					.attr("d",  function(d) { return legendsymbols(d.Habitat);})
     					.style("fill", function(d) {return color(d.Habitat); });
 
-    				d3.selectAll("#proteinrect").style("opacity", 0);
-    				d3.selectAll("#proteintext").style("opacity", 0);
-    				d3.selectAll("#grouprect").style("opacity", 0);
-    				d3.selectAll("#grouptext").style("opacity", 0);
+    				d3.selectAll("#pigmentsymb").style("opacity", 0);
+    				d3.selectAll("#pigmenttext").style("opacity", 0);
+    				d3.selectAll("#vertebratesymb").style("opacity", 0);
+    				d3.selectAll("#vertebratetext").style("opacity", 0);
+            d3.selectAll("#migratorsymb").style("opacity", 0);
+            d3.selectAll("#migratortext").style("opacity", 0);
 
     				var legend = svg.selectAll(".legend")
     					.data(color.domain())
@@ -180,7 +195,7 @@
     					.style("fill", color)
     					.style("opacity", 1)
     					.style("stroke", "#000")
-    					.attr("id", "habitatrect");
+    					.attr("id", "habitatsymb");
 
     				legend.append("text")
     					.attr("x", width - 24)
@@ -191,19 +206,21 @@
     					.attr("id", "habitattext")
     					.style("opacity", 1);
 
-    				d3.selectAll("#habitatrect").style("opacity", 1);
+    				d3.selectAll("#habitatsymb").style("opacity", 1);
     				d3.selectAll("#habitattext").style("opacity", 1);
             });
 
-    			d3.select(".protein").on("click", function(d) {
+    			d3.select(".pigment").on("click", function(d) {
     				svg.selectAll(".dot")
-    					.attr("d",  function(d) {return legendsymbols(d.Protein);})
-    					.style("fill", function(d) {return color(d.Protein); });
+    					.attr("d",  function(d) {return legendsymbols(d.Pigment);})
+    					.style("fill", function(d) {return color(d.Pigment); });
 
-    				d3.selectAll("#habitatrect").style("opacity", 0);
+    				d3.selectAll("#habitatsymb").style("opacity", 0);
     				d3.selectAll("#habitattext").style("opacity", 0);
-    				d3.selectAll("#grouprect").style("opacity", 0);
-    				d3.selectAll("#grouptext").style("opacity", 0);
+    				d3.selectAll("#vertebratesymb").style("opacity", 0);
+    				d3.selectAll("#vertebratetext").style("opacity", 0);
+            d3.selectAll("#migratorsymb").style("opacity", 0);
+            d3.selectAll("#migratortext").style("opacity", 0);
 
     				var legend = svg.selectAll(".legend")
     					.data(color.domain())
@@ -217,7 +234,7 @@
     					.style("fill", color)
     					.style("opacity", 1)
     					.style("stroke", "#000")
-    					.attr("id", "proteinrect");
+    					.attr("id", "pigmentsymb");
 
     				legend.append("text")
     					.attr("x", width - 24)
@@ -225,21 +242,23 @@
     					.attr("dy", ".35em")
     					.style("text-anchor", "end")
     					.text(function(d) { return d; })
-    					.attr("id", "proteintext");
+    					.attr("id", "pigmenttext");
 
-    				d3.selectAll("#proteinrect").style("opacity", 1);
-    				d3.selectAll("#proteintext").style("opacity", 1);
+    				d3.selectAll("#pigmentsymb").style("opacity", 1);
+    				d3.selectAll("#pigmenttext").style("opacity", 1);
     				});
 
-    			d3.select(".group").on("click", function(d) {
+    			d3.select(".vertebrate").on("click", function(d) {
     				svg.selectAll(".dot")
-    					.attr("d",  function(d) {return legendsymbols(d.Group);})
-    					.style("fill", function(d) { return color(d.Group); });
+    					.attr("d",  function(d) {return legendsymbols(d.Vertebrate);})
+    					.style("fill", function(d) { return color(d.Vertebrate); });
 
-    				d3.selectAll("#habitatrect").style("opacity", 0);
+    				d3.selectAll("#habitatsymb").style("opacity", 0);
     				d3.selectAll("#habitattext").style("opacity", 0);
-    				d3.selectAll("#proteinrect").style("opacity", 0);
-    				d3.selectAll("#proteintext").style("opacity", 0);
+    				d3.selectAll("#pigmentsymb").style("opacity", 0);
+    				d3.selectAll("#pigmenttext").style("opacity", 0);
+            d3.selectAll("#migratorsymb").style("opacity", 0);
+            d3.selectAll("#migratortext").style("opacity", 0);
 
     				var legend = svg.selectAll(".legend")
     					.data(color.domain())
@@ -253,7 +272,7 @@
     					.style("fill", color)
     					.style("opacity", 1)
     					.style("stroke", "#000")
-    					.attr("id", "grouprect");
+    					.attr("id", "vertebratesymb");
 
     				legend.append("text")
     					.attr("x", width - 24)
@@ -261,28 +280,71 @@
     					.attr("dy", ".35em")
     					.style("text-anchor", "end")
     					.text(function(d) { return d; })
-    					.attr("id", "grouptext");
+    					.attr("id", "vertebratetext");
 
-    				d3.selectAll("#grouprect").style("opacity", 1);
-    				d3.selectAll("#grouptext").style("opacity", 1);
+    				d3.selectAll("#vertebratesymb").style("opacity", 1);
+    				d3.selectAll("#vertebratetext").style("opacity", 1);
     				});
+
+
+          d3.select(".migrator").on("click", function(d) {
+              svg.selectAll(".dot")
+                .attr("d",  function(d) { return legendsymbols(d.Migrator);})
+                .style("fill", function(d) {return color(d.Migrator); });
+
+              d3.selectAll("#habitatsymb").style("opacity", 0);
+        			d3.selectAll("#habitattext").style("opacity", 0);
+              d3.selectAll("#pigmentsymb").style("opacity", 0);
+              d3.selectAll("#pigmenttext").style("opacity", 0);
+              d3.selectAll("#vertebratesymb").style("opacity", 0);
+              d3.selectAll("#vertebratetext").style("opacity", 0);
+
+              var legend = svg.selectAll(".legend")
+                .data(color.domain())
+               .enter().append("g")
+                .attr("class", "legend")
+                .attr("transform", function (d, i){if (d=="migrator"){return "translate(0,0)";}else{return "translate(0,20)";}});
+
+              legend.append("path")
+                .attr("transform", function() { return "translate("+(width-14)+",10)"; })
+                .attr("d", legendsymbols)
+                .style("fill", color)
+                .style("opacity", 1)
+                .style("stroke", "#000")
+                .attr("id", "migratorsymb");
+
+              legend.append("text")
+                .attr("x", width - 24)
+                .attr("y", 9)
+                .attr("dy", ".35em")
+                .style("text-anchor", "end")
+                .text(function(d) { return d; })
+                .attr("id", "migratortext")
+                .style("opacity", 1);
+
+              d3.selectAll("#migratorsymb").style("opacity", 1);
+              d3.selectAll("#migratortext").style("opacity", 1);
+               });
+
 
     			d3.select(".none").on("click", function(d) {
     				svg.selectAll(".dot")
     					.attr("d", d3.svg.symbol().type("circle"))
     					.style("fill", function(d) { return "black"; });
 
-    				d3.selectAll("#habitatrect").style("opacity", 0);
+    				d3.selectAll("#habitatsymb").style("opacity", 0);
     				d3.selectAll("#habitattext").style("opacity", 0);
-    				d3.selectAll("#proteinrect").style("opacity", 0);
-    				d3.selectAll("#proteintext").style("opacity", 0);
-    				d3.selectAll("#grouprect").style("opacity", 0);
-    				d3.selectAll("#grouptext").style("opacity", 0);
+    				d3.selectAll("#pigmentsymb").style("opacity", 0);
+    				d3.selectAll("#pigmenttext").style("opacity", 0);
+    				d3.selectAll("#vertebratesymb").style("opacity", 0);
+    				d3.selectAll("#vertebratetext").style("opacity", 0);
+            d3.selectAll("#migratorsymb").style("opacity", 0);
+            d3.selectAll("#migratortext").style("opacity", 0);
     				});
 
     		</script>
         <div class="figurelegend">
-          <p><b>Figure 1</b>:  There is a range in oxygen affinity (P<sub>50</sub>) and heat of oxygenation (&Delta;H) traits among marine species. Each point on the plot represents a different species. Place the cursor on a point to see the species name, common name, and reference.  Click on the buttons in the top right corner to select the legend.  A, B, and C represent physiological types that will be explored in more detail and correspond to the following characteristics, A = low P<sub>50</sub> with negative &Delta;H, B = low P<sub>50</sub> with positive &Delta;H, and C = high P<sub>50</sub> with negative &Delta;H. Low P<sub>50</sub> means high oxygen affinity and more hypoxia tolerant. Blood-oxygen binding of species with &Delta;H=0 is independent of temperature. There are no species with traits that correspond with a positive &Delta;H and a high P<sub>50</sub>. This interactive graph consolidates information from Figure 1, and Tables 1, 2, and 3 in the print version of the paper.
+          <p><b>Figure 1</b>:  There is a range in oxygen affinity (P<sub>50</sub>) and heat of oxygenation (&Delta;H) traits among marine species. Each point on the plot represents a different species. Place the cursor on a point to see the species name, common name, and reference.  Click on the buttons in the top right corner to select the legend. A, B, and C represent physiological types that will be explored in more detail and correspond to the following characteristics, A = low P<sub>50</sub> with negative &Delta;H, B = low P<sub>50</sub> with positive &Delta;H, and C = high P<sub>50</sub> with negative &Delta;H. Low P<sub>50</sub> means high oxygen affinity and more hypoxia tolerant. Blood-oxygen binding of species with &Delta;H=0 is independent of temperature. There are no species with traits that correspond with a positive &Delta;H and a high P<sub>50</sub>. This interactive graph consolidates information from Figure 1, and Tables 1, 2, and 3 in the print version of the paper.
           </p>
         </div>
 
