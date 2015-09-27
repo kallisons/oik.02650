@@ -152,7 +152,7 @@
     				  .attr("cy", function(d) { return y(d.deltaH); })
     				  .style("fill", "black")
     					  .on("mouseover", function(d) {
-                  var xPosition = parseFloat(d3.select(this).attr("cx"))+150;
+                  var xPosition = parseFloat(d3.select(this).attr("cx"))+110;
       						var yPosition = parseFloat(d3.select(this).attr("cy"));
               	  tooltip.transition()
                     .duration(200)
